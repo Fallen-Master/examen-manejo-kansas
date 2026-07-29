@@ -58,11 +58,13 @@
   .review-item .ra{color:var(--verde); font-weight:600;}
   .review-item .rw{color:var(--rojo);}
   /* memes */
-  .meme{position:relative; max-width:480px; margin:0 auto 16px; aspect-ratio:4/3;
+  /* caja 4:3 con el truco de padding: funciona en todos los teléfonos, incluso iOS viejo */
+  .meme{position:relative; width:100%; max-width:480px; margin:0 auto 16px; padding-top:75%;
     background:#e8edf5; border-radius:14px; overflow:hidden;}
-  .meme img{width:100%; height:100%; object-fit:cover; border-radius:14px; display:block;}
+  .meme img{position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; display:block;}
   .meme-txt{position:absolute; left:0; right:0; text-align:center; font-family:Impact,'Arial Black',sans-serif;
-    color:#fff; text-transform:uppercase; font-size:1.7rem; line-height:1.15; padding:0 10px; letter-spacing:.5px;
+    color:#fff; text-transform:uppercase; font-size:clamp(1.05rem, 5.2vw, 1.7rem); line-height:1.15;
+    padding:0 8px; letter-spacing:.5px;
     text-shadow:2px 2px 0 #000,-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000,0 3px 6px rgba(0,0,0,.6);}
   .meme-top{top:8px;} .meme-bottom{bottom:10px;}
   .role-btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
