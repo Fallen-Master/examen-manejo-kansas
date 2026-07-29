@@ -40,7 +40,9 @@
   .opt:hover{background:#eef2f8;}
   .opt.correct{background:#e3f4e9; border-color:var(--verde); font-weight:700;}
   .opt.wrong{background:#fdecea; border-color:var(--rojo);}
-  .opt:disabled{cursor:default;}
+  .opt:disabled{cursor:default; opacity:1; color:#222; -webkit-text-fill-color:#222;}
+  .opt.correct:disabled{color:#14532d; -webkit-text-fill-color:#14532d;}
+  .opt.wrong:disabled{color:#7f1d1d; -webkit-text-fill-color:#7f1d1d;}
   .explanation{background:#fff8e1; border-left:5px solid var(--amarillo); border-radius:8px; padding:14px; margin-top:6px;}
   .filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
   .chip{border:2px solid var(--azul-claro); background:#fff; color:var(--azul); border-radius:20px; padding:8px 16px; cursor:pointer; font-size:.95rem; font-weight:600;}
