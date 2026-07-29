@@ -3,7 +3,8 @@
 Sitio de práctica bilingüe (español/inglés) para el examen escrito de manejo de Kansas.
 Basado en el [Manual del Conductor de Kansas](https://www.ksrevenue.gov/pdf/dlhb.pdf).
 
-- **55 preguntas** en 4 categorías: señales, reglas, seguridad, alcohol y leyes
+- **199 preguntas** en 4 categorías (similar al banco real de ~200 del que el DMV saca sus 25): señales, reglas, seguridad, alcohol y leyes
+- Imágenes oficiales de señales (MUTCD, dominio público) con respaldo dibujado si no cargan
 - **Modo de estudio**: respuesta y explicación inmediata, con filtro por categoría
 - **Examen de práctica**: 25 preguntas al azar, 80% para aprobar — igual que el DMV
 - Español por defecto, con botón para cambiar a inglés

@@ -52,6 +52,20 @@
   .review-item .rq{font-weight:700;}
   .review-item .ra{color:var(--verde); font-weight:600;}
   .review-item .rw{color:var(--rojo);}
+  /* memes */
+  .meme{position:relative; max-width:480px; margin:0 auto 16px;}
+  .meme img{width:100%; border-radius:14px; display:block;}
+  .meme-txt{position:absolute; left:0; right:0; text-align:center; font-family:Impact,'Arial Black',sans-serif;
+    color:#fff; text-transform:uppercase; font-size:1.7rem; line-height:1.15; padding:0 10px; letter-spacing:.5px;
+    text-shadow:2px 2px 0 #000,-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000,0 3px 6px rgba(0,0,0,.6);}
+  .meme-top{top:8px;} .meme-bottom{bottom:10px;}
+  .role-btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+  .role-btn{flex:1; min-width:170px; border:2px solid var(--azul-claro); background:#fff; color:var(--azul);
+    border-radius:12px; padding:14px; font-size:1.05rem; font-weight:700; cursor:pointer;}
+  .role-btn.active{background:var(--azul-claro); color:#fff;}
+  .modal{position:fixed; inset:0; background:rgba(10,20,40,.75); display:flex; align-items:center;
+    justify-content:center; padding:16px; z-index:50;}
+  .modal-card{background:#fff; border-radius:16px; padding:20px; max-width:520px; width:100%;}
   .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
   .link-btn{background:none; border:none; color:var(--azul-claro); font-size:1rem; cursor:pointer; text-decoration:underline; padding:6px;}
   footer{text-align:center; color:var(--gris); font-size:.85rem; padding:20px; max-width:760px; margin:0 auto;}
@@ -66,6 +80,13 @@
 <main>
   <!-- HOME -->
   <section id="screen-home">
+    <div class="card">
+      <h3 data-i18n="roleQ"></h3>
+      <div class="role-btns">
+        <button class="role-btn" id="roleSuegro" onclick="setRole('suegro')" data-i18n="roleSuegro"></button>
+        <button class="role-btn" id="roleSuegra" onclick="setRole('suegra')" data-i18n="roleSuegra"></button>
+      </div>
+    </div>
     <div class="card">
       <h2 data-i18n="welcome"></h2>
       <p class="subtitle" data-i18n="welcomeSub"></p>
@@ -107,6 +128,11 @@
   <!-- RESULTS -->
   <section id="screen-results" class="hidden">
     <div class="card">
+      <div class="meme" id="resultMeme">
+        <img id="memeImg" src="" alt="">
+        <div class="meme-txt meme-top" id="memeTop"></div>
+        <div class="meme-txt meme-bottom" id="memeBottom"></div>
+      </div>
       <div class="result-big" id="resultScore"></div>
       <div class="result-msg" id="resultMsg"></div>
       <button class="btn btn-green" onclick="startExam()" data-i18n="tryAgain"></button>
@@ -118,6 +144,18 @@
     </div>
   </section>
 </main>
+
+<!-- CHEER MODAL (study mode) -->
+<div class="modal hidden" id="cheerModal">
+  <div class="modal-card">
+    <div class="meme">
+      <img src="img/aprobado.jpg" alt="">
+      <div class="meme-txt meme-top" id="cheerTop"></div>
+      <div class="meme-txt meme-bottom" id="cheerBottom"></div>
+    </div>
+    <button class="btn btn-green" onclick="closeCheer()" data-i18n="continueBtn"></button>
+  </div>
+</div>
 
 <footer id="footerText"></footer>
 
@@ -202,6 +240,8 @@ const I18N = {
     tryAgain:"Intentar otro examen", reviewTitle:"Preguntas que falló:",
     yourAnswer:"Su respuesta:", correctAnswer:"Respuesta correcta:",
     all:"Todas", senales:"Señales", reglas:"Reglas", seguridad:"Seguridad", alcohol:"Alcohol y leyes",
+    roleQ:"Antes de empezar... ¿quién eres? 😄", roleSuegro:"El suegro de Rafa 👨", roleSuegra:"La suegra de Rafa 👩",
+    continueBtn:"Continuar",
     footer:"Sitio de práctica gratuito basado en el Manual del Conductor de Kansas (ksrevenue.gov). No es un sitio oficial del estado de Kansas.",
     studyDone:"¡Terminó de repasar todas las preguntas! 👏"
   },
@@ -221,13 +261,54 @@ const I18N = {
     tryAgain:"Try another exam", reviewTitle:"Questions you missed:",
     yourAnswer:"Your answer:", correctAnswer:"Correct answer:",
     all:"All", senales:"Road Signs", reglas:"Rules", seguridad:"Safety", alcohol:"Alcohol & Laws",
+    roleQ:"Before we start... who are you? 😄", roleSuegro:"Rafa's father-in-law 👨", roleSuegra:"Rafa's mother-in-law 👩",
+    continueBtn:"Continue",
     footer:"Free practice site based on the Kansas Driving Handbook (ksrevenue.gov). Not an official State of Kansas website.",
     studyDone:"You finished reviewing all the questions! 👏"
   }
 };
 
+// ---------- Memes de Rafa ----------
+const MEMES = {
+  pass:{
+    suegro:{es:["¡ESE ES MI SUEGRO!","¡APROBADO! AL DMV SIN MIEDO 🚗"],
+            en:["THAT'S MY FATHER-IN-LAW!","PASSED! DMV, HERE WE COME 🚗"]},
+    suegra:{es:["¡ESA ES MI SUEGRA!","¡APROBADA! NADA LA DETIENE 🚗"],
+            en:["THAT'S MY MOTHER-IN-LAW!","PASSED! NOTHING STOPS HER 🚗"]},
+    otro:{es:["¡APROBADO!","RAFA ESTÁ ORGULLOSO DE TI"],
+          en:["PASSED!","RAFA IS PROUD OF YOU"]}},
+  fail:{
+    suegro:{es:["AY, SUEGRO...","EL MANUAL NOS LLAMA OTRA VEZ 😅"],
+            en:["OH NO, SUEGRO...","THE HANDBOOK CALLS US AGAIN 😅"]},
+    suegra:{es:["AY, SUEGRA... CASI CASI","¡OTRA VUELTA Y LO LOGRA! 💪"],
+            en:["SO CLOSE, SUEGRA...","ONE MORE TRY AND YOU'VE GOT IT! 💪"]},
+    otro:{es:["¡CASI!","A RAFA TAMBIÉN LE COSTÓ 😅"],
+          en:["ALMOST!","IT TOOK RAFA A FEW TRIES TOO 😅"]}},
+  cheer:{
+    suegro:{es:["¡VA MUY BIEN, SUEGRO!","¡SIGA ASÍ! 💪"],
+            en:["YOU'RE DOING GREAT, SUEGRO!","KEEP IT UP! 💪"]},
+    suegra:{es:["¡VA MUY BIEN, SUEGRA!","¡SIGA ASÍ! 💪"],
+            en:["YOU'RE DOING GREAT, SUEGRA!","KEEP IT UP! 💪"]},
+    otro:{es:["¡VAS MUY BIEN!","¡SIGUE ASÍ! 💪"],
+          en:["YOU'RE DOING GREAT!","KEEP IT UP! 💪"]}}
+};
+const CHEER_EVERY = 12; // study mode: meme every N questions
+
 // ---------- State ----------
+let role = localStorage.getItem("role") || null;
 let lang = localStorage.getItem("lang") || "es";
+
+function setRole(r){
+  role = r;
+  localStorage.setItem("role", r);
+  updateRoleButtons();
+}
+function updateRoleButtons(){
+  const a = document.getElementById("roleSuegro"), b = document.getElementById("roleSuegra");
+  if(a) a.classList.toggle("active", role === "suegro");
+  if(b) b.classList.toggle("active", role === "suegra");
+}
+function memeFor(kind){ return MEMES[kind][role || "otro"][lang]; }
 let mode = null;            // "study" | "exam"
 let quizList = [];          // questions in play
 let idx = 0;
@@ -376,6 +457,9 @@ function renderExamFeedbackless(i){
 }
 
 function nextQuestion(){
+  if(mode === "study" && (idx + 1) % CHEER_EVERY === 0 && idx < quizList.length - 1){
+    showCheer();
+  }
   if(idx < quizList.length - 1){
     idx++;
     renderQuestion(true);
@@ -383,6 +467,16 @@ function nextQuestion(){
     if(mode === "exam") showResults();
     else showStudyDone();
   }
+}
+
+function showCheer(){
+  const [top, bottom] = memeFor("cheer");
+  document.getElementById("cheerTop").textContent = top;
+  document.getElementById("cheerBottom").textContent = bottom;
+  document.getElementById("cheerModal").classList.remove("hidden");
+}
+function closeCheer(){
+  document.getElementById("cheerModal").classList.add("hidden");
 }
 
 function showStudyDone(){
@@ -394,6 +488,11 @@ function showStudyDone(){
 function showResults(){
   const correct = answers.filter(a => a && a.ok).length;
   const passed = correct >= 20;
+  // meme de Rafa
+  document.getElementById("memeImg").src = passed ? "img/aprobado.jpg" : "img/reprobado.jpg";
+  const [mTop, mBottom] = memeFor(passed ? "pass" : "fail");
+  document.getElementById("memeTop").textContent = mTop;
+  document.getElementById("memeBottom").textContent = mBottom;
   const scoreEl = document.getElementById("resultScore");
   scoreEl.textContent = correct + " / " + quizList.length;
   scoreEl.className = "result-big " + (passed ? "pass" : "fail");
@@ -424,6 +523,7 @@ function showResults(){
 
 // ---------- Init ----------
 applyLang();
+updateRoleButtons();
 </script>
 </body>
 </html>
