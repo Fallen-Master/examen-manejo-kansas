@@ -137,7 +137,7 @@
   <section id="screen-results" class="hidden">
     <div class="card">
       <div class="meme" id="resultMeme">
-        <img id="memeImg" src="" alt="" onerror="this.style.display='none'">
+        <img id="memeImg" alt="">
         <div class="meme-txt meme-top" id="memeTop"></div>
         <div class="meme-txt meme-bottom" id="memeBottom"></div>
       </div>
@@ -157,7 +157,7 @@
 <div class="modal hidden" id="cheerModal">
   <div class="modal-card">
     <div class="meme">
-      <img id="cheerImg" src="img/pass-pulgar.jpg" alt="" onerror="this.style.display='none'">
+      <img id="cheerImg" alt="">
       <div class="meme-txt meme-top" id="cheerTop"></div>
       <div class="meme-txt meme-bottom" id="cheerBottom"></div>
     </div>
@@ -299,6 +299,18 @@ function pickMeme(kind){
     .replace(/%E/g, f ? "ESA" : "ESE");
   const txt = m[lang] || m.es;
   return {img: "img/" + m.img, top: line(txt[0]), bottom: line(txt[1])};
+}
+
+// Coloca un meme en pantalla. Siempre vuelve a mostrar la imagen:
+// nunca dejamos un display:none pegado de una carga anterior.
+function showMeme(imgId, topId, bottomId, m){
+  const img = document.getElementById(imgId);
+  img.style.display = "";                       // reset
+  img.onerror = () => { img.style.display = "none"; };
+  img.onload  = () => { img.style.display = ""; };
+  img.src = m.img;
+  document.getElementById(topId).textContent = m.top;
+  document.getElementById(bottomId).textContent = m.bottom;
 }
 
 // ---------- State ----------
@@ -476,10 +488,7 @@ function nextQuestion(){
 }
 
 function showCheer(){
-  const m = pickMeme("cheer");
-  document.getElementById("cheerImg").src = m.img;
-  document.getElementById("cheerTop").textContent = m.top;
-  document.getElementById("cheerBottom").textContent = m.bottom;
+  showMeme("cheerImg", "cheerTop", "cheerBottom", pickMeme("cheer"));
   document.getElementById("cheerModal").classList.remove("hidden");
 }
 function closeCheer(){
@@ -496,10 +505,7 @@ function showResults(){
   const correct = answers.filter(a => a && a.ok).length;
   const passed = correct >= 20;
   // meme de Rafa (al azar del banco)
-  const m = pickMeme(passed ? "pass" : "fail");
-  document.getElementById("memeImg").src = m.img;
-  document.getElementById("memeTop").textContent = m.top;
-  document.getElementById("memeBottom").textContent = m.bottom;
+  showMeme("memeImg", "memeTop", "memeBottom", pickMeme(passed ? "pass" : "fail"));
   const scoreEl = document.getElementById("resultScore");
   scoreEl.textContent = correct + " / " + quizList.length;
   scoreEl.className = "result-big " + (passed ? "pass" : "fail");
