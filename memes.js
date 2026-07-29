@@ -1,0 +1,81 @@
+// Memes de Rafa — cada imagen con su propio chiste.
+// {img, es:[arriba, abajo], en:[top, bottom]}  —  %S se reemplaza por SUEGRO / SUEGRA
+// Rafa's memes — one joke per image. %S becomes SUEGRO / SUEGRA (or a neutral line).
+
+const MEME_PASS = [
+  {img:"pass-pulgar.jpg",
+   es:["¡%E ES MI %S!","APROBAD%O A LA PRIMERA 👊"],
+   en:["THAT'S MY %S!","PASSED ON THE FIRST TRY 👊"]},
+  {img:"pass-brazos.jpg",
+   es:["¡LO LOGRÓ!","YA CASI ES CHOFER OFICIAL 🎉"],
+   en:["YOU DID IT!","OFFICIAL DRIVER STATUS PENDING 🎉"]},
+  {img:"pass-licencia.jpg",
+   es:["LA LICENCIA YA CASI ES SUYA","¡SIGA ASÍ, %S!"],
+   en:["THAT LICENSE IS ALMOST YOURS","KEEP GOING, %S!"]},
+  {img:"pass-lentes.jpg",
+   es:["APROBAD%O SIN DESPEINARSE","PURO TALENTO 😎"],
+   en:["PASSED WITHOUT BREAKING A SWEAT","PURE TALENT 😎"]},
+  {img:"pass-volante.jpg",
+   es:["LIST%O PARA EL VOLANTE","¡NOS VEMOS EN LA CARRETERA! 🚗"],
+   en:["READY FOR THE WHEEL","SEE YOU ON THE ROAD! 🚗"]},
+  {img:"pass-choca.jpg",
+   es:["¡CHÓQUELA, %S!","ESO SE LLAMA ESTUDIAR 🙌"],
+   en:["HIGH FIVE, %S!","THAT'S WHAT STUDYING LOOKS LIKE 🙌"]},
+  {img:"pass-confeti.jpg",
+   es:["¡FIESTA EN CASA DE LOS GOMEZ!","APROBAD%O 🎊"],
+   en:["PARTY AT THE GOMEZ HOUSE!","PASSED 🎊"]},
+  {img:"pass-lagrima.jpg",
+   es:["NO ESTOY LLORANDO...","ES QUE ESTOY MUY ORGULLOSO 🥹"],
+   en:["I'M NOT CRYING...","I'M JUST SO PROUD 🥹"]},
+  {img:"pass-mesa.jpg",
+   es:["USTED ESTUDIANDO / YO CELEBRANDO","¡APROBAD%O, %S! 💪"],
+   en:["YOU STUDYING / ME CELEBRATING","YOU PASSED, %S! 💪"]},
+  {img:"pass-trofeo.jpg",
+   es:["%C DEL MANUAL DE KANSAS","¡AL DMV SIN MIEDO! 🏆"],
+   en:["KANSAS HANDBOOK CHAMPION","OFF TO THE DMV, NO FEAR! 🏆"]}
+];
+
+const MEME_FAIL = [
+  {img:"fail-hombros.jpg",
+   es:["¿Y AHORA QUÉ PASÓ, %S?","¡OTRA VUELTA Y LO LOGRA!"],
+   en:["WHAT HAPPENED, %S?","ONE MORE TRY AND YOU'VE GOT IT!"]},
+  {img:"fail-cara.jpg",
+   es:["AY, %S...","EL MANUAL NOS LLAMA OTRA VEZ 😅"],
+   en:["OH NO, %S...","THE HANDBOOK IS CALLING AGAIN 😅"]},
+  {img:"fail-manual.jpg",
+   es:["EL MANUAL: 'HOLA DE NUEVO'","¡A REPASAR SE HA DICHO! 📖"],
+   en:["THE HANDBOOK: 'HELLO AGAIN'","TIME TO REVIEW! 📖"]},
+  {img:"fail-frente.jpg",
+   es:["CASI CASI, %S","¡NO SE RINDA, VA MUY BIEN!"],
+   en:["SO CLOSE, %S","DON'T GIVE UP, YOU'RE DOING GREAT!"]},
+  {img:"fail-nariz.jpg",
+   es:["RESPIRE HONDO...","Y LE DAMOS OTRA VUELTA 😮‍💨"],
+   en:["TAKE A DEEP BREATH...","AND WE GO AGAIN 😮‍💨"]},
+  {img:"fail-silla.jpg",
+   es:["A MÍ TAMBIÉN ME COSTÓ","NADIE PASA A LA PRIMERA 😴"],
+   en:["IT TOOK ME A FEW TRIES TOO","NOBODY PASSES FIRST TIME 😴"]},
+  {img:"fail-senala.jpg",
+   es:["USTED PUEDE, %S","¡OTRO INTENTO Y ES SUYA! 👉"],
+   en:["YOU'VE GOT THIS, %S","ONE MORE GO AND IT'S YOURS! 👉"]}
+];
+
+const MEME_CHEER = [
+  {img:"pass-pulgar.jpg",
+   es:["¡VA MUY BIEN, %S!","¡SIGA ASÍ! 💪"],
+   en:["YOU'RE DOING GREAT, %S!","KEEP IT UP! 💪"]},
+  {img:"pass-choca.jpg",
+   es:["¡CHÓQUELA!","VAMOS A MEDIO CAMINO 🙌"],
+   en:["HIGH FIVE!","WE'RE HALFWAY THERE 🙌"]},
+  {img:"pass-lentes.jpg",
+   es:["MÍRESE NOMÁS","TODO UN EXPERTO 😎"],
+   en:["LOOK AT YOU","A REAL EXPERT 😎"]},
+  {img:"pass-brazos.jpg",
+   es:["¡ESO, %S!","NO PARE AHORA 🎉"],
+   en:["THAT'S IT, %S!","DON'T STOP NOW 🎉"]},
+  {img:"pass-volante.jpg",
+   es:["YA CASI SE SIENTE EL VOLANTE","¡ADELANTE! 🚗"],
+   en:["YOU CAN ALMOST FEEL THE WHEEL","KEEP GOING! 🚗"]},
+  {img:"pass-confeti.jpg",
+   es:["¡QUÉ BIEN VA!","UNAS CUANTAS MÁS 🎊"],
+   en:["LOOKING GOOD!","JUST A FEW MORE 🎊"]}
+];

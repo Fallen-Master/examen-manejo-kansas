@@ -153,7 +153,7 @@
 <div class="modal hidden" id="cheerModal">
   <div class="modal-card">
     <div class="meme">
-      <img src="img/aprobado.jpg" alt="">
+      <img id="cheerImg" src="img/pass-pulgar.jpg" alt="">
       <div class="meme-txt meme-top" id="cheerTop"></div>
       <div class="meme-txt meme-bottom" id="cheerBottom"></div>
     </div>
@@ -164,6 +164,7 @@
 <footer id="footerText"></footer>
 
 <script src="questions.js"></script>
+<script src="memes.js"></script>
 <script>
 // ---------- Road sign SVGs ----------
 const SIGNS = {
@@ -272,31 +273,29 @@ const I18N = {
   }
 };
 
-// ---------- Memes de Rafa ----------
-const MEMES = {
-  pass:{
-    suegro:{es:["¡ESE ES MI SUEGRO!","¡APROBADO! AL DMV SIN MIEDO 🚗"],
-            en:["THAT'S MY FATHER-IN-LAW!","PASSED! DMV, HERE WE COME 🚗"]},
-    suegra:{es:["¡ESA ES MI SUEGRA!","¡APROBADA! NADA LA DETIENE 🚗"],
-            en:["THAT'S MY MOTHER-IN-LAW!","PASSED! NOTHING STOPS HER 🚗"]},
-    otro:{es:["¡APROBADO!","RAFA ESTÁ ORGULLOSO DE TI"],
-          en:["PASSED!","RAFA IS PROUD OF YOU"]}},
-  fail:{
-    suegro:{es:["AY, SUEGRO...","EL MANUAL NOS LLAMA OTRA VEZ 😅"],
-            en:["OH NO, SUEGRO...","THE HANDBOOK CALLS US AGAIN 😅"]},
-    suegra:{es:["AY, SUEGRA... CASI CASI","¡OTRA VUELTA Y LO LOGRA! 💪"],
-            en:["SO CLOSE, SUEGRA...","ONE MORE TRY AND YOU'VE GOT IT! 💪"]},
-    otro:{es:["¡CASI!","A RAFA TAMBIÉN LE COSTÓ 😅"],
-          en:["ALMOST!","IT TOOK RAFA A FEW TRIES TOO 😅"]}},
-  cheer:{
-    suegro:{es:["¡VA MUY BIEN, SUEGRO!","¡SIGA ASÍ! 💪"],
-            en:["YOU'RE DOING GREAT, SUEGRO!","KEEP IT UP! 💪"]},
-    suegra:{es:["¡VA MUY BIEN, SUEGRA!","¡SIGA ASÍ! 💪"],
-            en:["YOU'RE DOING GREAT, SUEGRA!","KEEP IT UP! 💪"]},
-    otro:{es:["¡VAS MUY BIEN!","¡SIGUE ASÍ! 💪"],
-          en:["YOU'RE DOING GREAT!","KEEP IT UP! 💪"]}}
-};
+// ---------- Memes de Rafa (banco en memes.js) ----------
 const CHEER_EVERY = 12; // study mode: meme every N questions
+const BANKS = {pass: MEME_PASS, fail: MEME_FAIL, cheer: MEME_CHEER};
+let lastMeme = {};      // avoid repeating the same image twice in a row
+
+// Devuelve {img, top, bottom} eligiendo al azar del banco
+function pickMeme(kind){
+  const bank = BANKS[kind];
+  let m = bank[Math.floor(Math.random() * bank.length)];
+  if(bank.length > 1 && m.img === lastMeme[kind]){
+    m = bank[(bank.indexOf(m) + 1) % bank.length];
+  }
+  lastMeme[kind] = m.img;
+  // concordancia de género: %S suegro/a · %O terminación o/a · %C campeón/a · %E ese/esa
+  const f = role === "suegra";                       // sin rol elegido = masculino
+  const line = s => s
+    .replace(/%S/g, f ? "SUEGRA" : "SUEGRO")
+    .replace(/%O/g, f ? "A" : "O")
+    .replace(/%C/g, f ? "CAMPEONA" : "CAMPEÓN")
+    .replace(/%E/g, f ? "ESA" : "ESE");
+  const txt = m[lang] || m.es;
+  return {img: "img/" + m.img, top: line(txt[0]), bottom: line(txt[1])};
+}
 
 // ---------- State ----------
 let role = localStorage.getItem("role") || null;
@@ -312,7 +311,6 @@ function updateRoleButtons(){
   if(a) a.classList.toggle("active", role === "suegro");
   if(b) b.classList.toggle("active", role === "suegra");
 }
-function memeFor(kind){ return MEMES[kind][role || "otro"][lang]; }
 let mode = null;            // "study" | "exam"
 let quizList = [];          // questions in play
 let idx = 0;
@@ -474,9 +472,10 @@ function nextQuestion(){
 }
 
 function showCheer(){
-  const [top, bottom] = memeFor("cheer");
-  document.getElementById("cheerTop").textContent = top;
-  document.getElementById("cheerBottom").textContent = bottom;
+  const m = pickMeme("cheer");
+  document.getElementById("cheerImg").src = m.img;
+  document.getElementById("cheerTop").textContent = m.top;
+  document.getElementById("cheerBottom").textContent = m.bottom;
   document.getElementById("cheerModal").classList.remove("hidden");
 }
 function closeCheer(){
@@ -492,11 +491,11 @@ function showStudyDone(){
 function showResults(){
   const correct = answers.filter(a => a && a.ok).length;
   const passed = correct >= 20;
-  // meme de Rafa
-  document.getElementById("memeImg").src = passed ? "img/aprobado.jpg" : "img/reprobado.jpg";
-  const [mTop, mBottom] = memeFor(passed ? "pass" : "fail");
-  document.getElementById("memeTop").textContent = mTop;
-  document.getElementById("memeBottom").textContent = mBottom;
+  // meme de Rafa (al azar del banco)
+  const m = pickMeme(passed ? "pass" : "fail");
+  document.getElementById("memeImg").src = m.img;
+  document.getElementById("memeTop").textContent = m.top;
+  document.getElementById("memeBottom").textContent = m.bottom;
   const scoreEl = document.getElementById("resultScore");
   scoreEl.textContent = correct + " / " + quizList.length;
   scoreEl.className = "result-big " + (passed ? "pass" : "fail");
