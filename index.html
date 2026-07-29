@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen de Manejo de Kansas — Práctica</title>
+<meta name="description" content="Práctica gratuita para el examen escrito de manejo de Kansas, en español e inglés.">
+<style>
+  :root{
+    --azul:#1a3a6b; --azul-claro:#2d5aa0; --amarillo:#f5b301;
+    --verde:#1e7d43; --rojo:#c0392b; --fondo:#f4f6fa; --blanco:#fff;
+    --gris:#5a6472; --borde:#d7dde6;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Segoe UI', Arial, sans-serif; background:var(--fondo); color:#222; font-size:19px; line-height:1.5;}
+  header{background:var(--azul); color:#fff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+  header h1{font-size:1.3rem; font-weight:600;}
+  .lang-btn{background:var(--amarillo); color:#222; border:none; border-radius:24px; padding:10px 20px; font-size:1rem; font-weight:700; cursor:pointer;}
+  .lang-btn:hover{filter:brightness(1.08);}
+  main{max-width:760px; margin:0 auto; padding:24px 16px 60px;}
+  .card{background:var(--blanco); border:1px solid var(--borde); border-radius:14px; padding:24px; margin-bottom:18px; box-shadow:0 2px 6px rgba(0,0,0,.05);}
+  .hidden{display:none !important;}
+  .btn{display:block; width:100%; border:none; border-radius:12px; padding:18px; font-size:1.15rem; font-weight:700; cursor:pointer; margin-top:14px;}
+  .btn-primary{background:var(--azul-claro); color:#fff;}
+  .btn-primary:hover{background:var(--azul);}
+  .btn-green{background:var(--verde); color:#fff;}
+  .btn-outline{background:#fff; color:var(--azul); border:2px solid var(--azul-claro);}
+  .subtitle{color:var(--gris); margin-top:6px;}
+  .facts{display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;}
+  .fact{flex:1; min-width:140px; background:var(--fondo); border-radius:10px; padding:12px; text-align:center;}
+  .fact b{display:block; font-size:1.5rem; color:var(--azul);}
+  /* question */
+  .progress-wrap{background:#e2e7ef; border-radius:8px; height:14px; margin-bottom:8px; overflow:hidden;}
+  .progress-bar{height:100%; background:var(--verde); width:0%; transition:width .3s;}
+  .q-count{color:var(--gris); font-size:.95rem; margin-bottom:12px;}
+  .sign-box{text-align:center; margin:10px 0 16px;}
+  .sign-box svg{width:130px; height:130px;}
+  .q-text{font-size:1.25rem; font-weight:700; margin-bottom:16px;}
+  .opt{display:block; width:100%; text-align:left; background:#fff; border:2px solid var(--borde); border-radius:12px; padding:16px; font-size:1.1rem; cursor:pointer; margin-bottom:10px; transition:background .15s;}
+  .opt:hover{background:#eef2f8;}
+  .opt.correct{background:#e3f4e9; border-color:var(--verde); font-weight:700;}
+  .opt.wrong{background:#fdecea; border-color:var(--rojo);}
+  .opt:disabled{cursor:default;}
+  .explanation{background:#fff8e1; border-left:5px solid var(--amarillo); border-radius:8px; padding:14px; margin-top:6px;}
+  .filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+  .chip{border:2px solid var(--azul-claro); background:#fff; color:var(--azul); border-radius:20px; padding:8px 16px; cursor:pointer; font-size:.95rem; font-weight:600;}
+  .chip.active{background:var(--azul-claro); color:#fff;}
+  .result-big{font-size:3rem; font-weight:800; text-align:center;}
+  .pass{color:var(--verde);} .fail{color:var(--rojo);}
+  .result-msg{text-align:center; font-size:1.3rem; margin-top:8px;}
+  .review-item{border-top:1px solid var(--borde); padding:14px 0;}
+  .review-item .rq{font-weight:700;}
+  .review-item .ra{color:var(--verde); font-weight:600;}
+  .review-item .rw{color:var(--rojo);}
+  .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  .link-btn{background:none; border:none; color:var(--azul-claro); font-size:1rem; cursor:pointer; text-decoration:underline; padding:6px;}
+  footer{text-align:center; color:var(--gris); font-size:.85rem; padding:20px; max-width:760px; margin:0 auto;}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="app-title">🚗 Examen de Manejo de Kansas</h1>
+  <button class="lang-btn" id="langBtn" onclick="toggleLang()">English</button>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section id="screen-home">
+    <div class="card">
+      <h2 data-i18n="welcome"></h2>
+      <p class="subtitle" data-i18n="welcomeSub"></p>
+      <div class="facts">
+        <div class="fact"><b>25</b><span data-i18n="factQuestions"></span></div>
+        <div class="fact"><b>80%</b><span data-i18n="factPass"></span></div>
+        <div class="fact"><b>5</b><span data-i18n="factErrors"></span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 data-i18n="studyTitle"></h3>
+      <p class="subtitle" data-i18n="studyDesc"></p>
+      <button class="btn btn-primary" onclick="startStudy()" data-i18n="studyBtn"></button>
+    </div>
+    <div class="card">
+      <h3 data-i18n="examTitle"></h3>
+      <p class="subtitle" data-i18n="examDesc"></p>
+      <button class="btn btn-green" onclick="startExam()" data-i18n="examBtn"></button>
+    </div>
+  </section>
+
+  <!-- QUIZ (shared by study & exam) -->
+  <section id="screen-quiz" class="hidden">
+    <div class="topbar">
+      <button class="link-btn" onclick="goHome()" data-i18n="backHome"></button>
+      <span class="q-count" id="qCount"></span>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="card">
+      <div class="filters hidden" id="filterBar"></div>
+      <div class="sign-box" id="signBox"></div>
+      <div class="q-text" id="qText"></div>
+      <div id="optList"></div>
+      <div class="explanation hidden" id="expBox"></div>
+      <button class="btn btn-primary hidden" id="nextBtn" onclick="nextQuestion()"></button>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="screen-results" class="hidden">
+    <div class="card">
+      <div class="result-big" id="resultScore"></div>
+      <div class="result-msg" id="resultMsg"></div>
+      <button class="btn btn-green" onclick="startExam()" data-i18n="tryAgain"></button>
+      <button class="btn btn-outline" onclick="goHome()" data-i18n="backHome2"></button>
+    </div>
+    <div class="card hidden" id="reviewCard">
+      <h3 data-i18n="reviewTitle"></h3>
+      <div id="reviewList"></div>
+    </div>
+  </section>
+</main>
+
+<footer id="footerText"></footer>
+
+<script src="questions.js"></script>
+<script>
+// ---------- Road sign SVGs ----------
+const SIGNS = {
+  stop:`<svg viewBox="0 0 100 100"><polygon points="30,5 70,5 95,30 95,70 70,95 30,95 5,70 5,30" fill="#c0392b" stroke="#fff" stroke-width="4"/><text x="50" y="60" font-size="24" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">STOP</text></svg>`,
+  yield:`<svg viewBox="0 0 100 100"><polygon points="5,10 95,10 50,92" fill="#c0392b"/><polygon points="16,17 84,17 50,80" fill="#fff"/><text x="50" y="42" font-size="15" font-weight="bold" fill="#c0392b" text-anchor="middle" font-family="Arial">YIELD</text></svg>`,
+  warning:`<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="8" transform="rotate(45 50 50)" fill="#f5b301" stroke="#222" stroke-width="3"/><path d="M35 62 Q50 30 65 62" fill="none" stroke="#222" stroke-width="6" stroke-linecap="round"/></svg>`,
+  construction:`<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="8" transform="rotate(45 50 50)" fill="#e8762c" stroke="#222" stroke-width="3"/><circle cx="50" cy="38" r="7" fill="#222"/><path d="M38 70 L44 48 L56 48 L62 70 M42 58 L30 52 M58 58 L70 50" stroke="#222" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
+  railroad:`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#f5b301" stroke="#222" stroke-width="3"/><path d="M25 25 L75 75 M75 25 L25 75" stroke="#222" stroke-width="7"/><text x="27" y="58" font-size="20" font-weight="bold" fill="#222" font-family="Arial">R</text><text x="60" y="58" font-size="20" font-weight="bold" fill="#222" font-family="Arial">R</text></svg>`,
+  school:`<svg viewBox="0 0 100 100"><polygon points="50,4 96,36 82,94 18,94 4,36" fill="#cadd35" stroke="#222" stroke-width="3"/><circle cx="40" cy="40" r="7" fill="#222"/><circle cx="62" cy="36" r="7" fill="#222"/><path d="M40 48 L40 72 M40 55 L30 62 M40 55 L50 60 M62 44 L62 70 M62 50 L52 58 M62 50 L72 55" stroke="#222" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
+  pennant:`<svg viewBox="0 0 100 100"><polygon points="5,50 95,15 95,85" fill="#f5b301" stroke="#222" stroke-width="3"/><text x="63" y="47" font-size="10" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">NO</text><text x="63" y="60" font-size="10" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">PASSING</text></svg>`,
+  speed:`<svg viewBox="0 0 100 100"><rect x="20" y="5" width="60" height="90" rx="6" fill="#fff" stroke="#222" stroke-width="3"/><text x="50" y="30" font-size="12" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">SPEED</text><text x="50" y="45" font-size="12" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">LIMIT</text><text x="50" y="80" font-size="28" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">55</text></svg>`,
+  noentry:`<svg viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="8" fill="#fff" stroke="#222" stroke-width="2"/><circle cx="50" cy="50" r="38" fill="#c0392b"/><rect x="22" y="44" width="56" height="12" rx="3" fill="#fff"/><text x="50" y="26" font-size="11" font-weight="bold" fill="#c0392b" text-anchor="middle" font-family="Arial">DO NOT</text><text x="50" y="88" font-size="11" font-weight="bold" fill="#c0392b" text-anchor="middle" font-family="Arial">ENTER</text></svg>`,
+  guide:`<svg viewBox="0 0 100 100"><rect x="4" y="25" width="92" height="50" rx="8" fill="#1e7d43" stroke="#fff" stroke-width="3"/><text x="50" y="47" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">Wichita</text><text x="50" y="66" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">25 mi</text></svg>`,
+  services:`<svg viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="10" fill="#2d5aa0" stroke="#fff" stroke-width="3"/><rect x="32" y="30" width="24" height="40" rx="4" fill="#fff"/><path d="M56 40 L66 34 L66 62 Q66 68 60 68" stroke="#fff" stroke-width="5" fill="none"/><text x="50" y="88" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">GAS</text></svg>`,
+  slowmoving:`<svg viewBox="0 0 100 100"><polygon points="50,8 95,88 5,88" fill="#c0392b"/><polygon points="50,22 84,81 16,81" fill="#e8762c"/></svg>`,
+  oneway:`<svg viewBox="0 0 100 100"><rect x="5" y="32" width="90" height="36" fill="#222" rx="4"/><polygon points="12,50 34,38 34,44 60,44 60,56 34,56 34,62" fill="#fff"/><text x="72" y="47" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">ONE</text><text x="72" y="60" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">WAY</text></svg>`,
+  wrongway:`<svg viewBox="0 0 100 100"><rect x="5" y="28" width="90" height="44" rx="6" fill="#c0392b" stroke="#fff" stroke-width="3"/><text x="50" y="47" font-size="15" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">WRONG</text><text x="50" y="65" font-size="15" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">WAY</text></svg>`,
+  keepright:`<svg viewBox="0 0 100 100"><rect x="15" y="10" width="70" height="80" rx="6" fill="#fff" stroke="#222" stroke-width="3"/><text x="50" y="28" font-size="11" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">KEEP</text><text x="50" y="42" font-size="11" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">RIGHT</text><path d="M40 78 L40 62 Q40 54 48 54 L58 54 M52 46 L60 54 L52 62" stroke="#222" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
+  merge:`<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="8" transform="rotate(45 50 50)" fill="#f5b301" stroke="#222" stroke-width="3"/><path d="M42 78 L42 50 Q42 40 50 34 L50 22 M62 70 Q62 55 52 48 M44 28 L50 20 L56 28" stroke="#222" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
+  curve:`<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="8" transform="rotate(45 50 50)" fill="#f5b301" stroke="#222" stroke-width="3"/><path d="M44 78 L44 58 Q44 44 58 42 L62 42 M56 34 L66 42 L56 50" stroke="#222" stroke-width="6" fill="none" stroke-linecap="round"/></svg>`,
+  crossroad:`<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="8" transform="rotate(45 50 50)" fill="#f5b301" stroke="#222" stroke-width="3"/><path d="M50 25 L50 75 M30 50 L70 50" stroke="#222" stroke-width="8" stroke-linecap="round"/></svg>`,
+  stopahead:`<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="8" transform="rotate(45 50 50)" fill="#f5b301" stroke="#222" stroke-width="3"/><polygon points="41,32 59,32 68,41 68,59 59,68 41,68 32,59 32,41" fill="#c0392b" stroke="#fff" stroke-width="2"/><text x="50" y="55" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">STOP</text></svg>`,
+  signalahead:`<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="8" transform="rotate(45 50 50)" fill="#f5b301" stroke="#222" stroke-width="3"/><rect x="41" y="27" width="18" height="46" rx="5" fill="#222"/><circle cx="50" cy="36" r="5" fill="#c0392b"/><circle cx="50" cy="50" r="5" fill="#f5b301"/><circle cx="50" cy="64" r="5" fill="#1e7d43"/></svg>`,
+  noturnonred:`<svg viewBox="0 0 100 100"><rect x="12" y="8" width="76" height="84" rx="6" fill="#fff" stroke="#222" stroke-width="3"/><text x="50" y="26" font-size="11" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">NO TURN</text><text x="50" y="42" font-size="11" font-weight="bold" fill="#222" text-anchor="middle" font-family="Arial">ON RED</text><circle cx="50" cy="66" r="16" fill="#c0392b"/><path d="M42 62 Q50 52 58 62 M58 62 L58 54 M58 62 L50 62" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`,
+  nouturn:`<svg viewBox="0 0 100 100"><rect x="12" y="12" width="76" height="76" rx="8" fill="#fff" stroke="#222" stroke-width="3"/><path d="M38 72 L38 46 Q38 32 50 32 Q62 32 62 46 L62 60 M54 52 L62 62 L70 52" stroke="#222" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="50" cy="50" r="34" fill="none" stroke="#c0392b" stroke-width="7"/><line x1="26" y1="26" x2="74" y2="74" stroke="#c0392b" stroke-width="7"/></svg>`,
+  hospital:`<svg viewBox="0 0 100 100"><rect x="12" y="12" width="76" height="76" rx="10" fill="#2d5aa0" stroke="#fff" stroke-width="3"/><path d="M38 30 L38 70 M62 30 L62 70 M38 50 L62 50" stroke="#fff" stroke-width="9" stroke-linecap="round"/></svg>`
+};
+
+// Official MUTCD sign images (US government works — public domain), served from Wikimedia Commons.
+// If an image fails to load, the inline SVG above is used as fallback.
+const SIGN_IMG = {
+  stop:"MUTCD_R1-1.svg",
+  yield:"MUTCD_R1-2.svg",
+  noentry:"MUTCD_R5-1.svg",
+  oneway:"MUTCD_R6-1R.svg",
+  wrongway:"MUTCD_R5-1a.svg",
+  keepright:"MUTCD_R4-7.svg",
+  noturnonred:"MUTCD_R10-11.svg",
+  nouturn:"MUTCD_R3-4.svg",
+  speed:"MUTCD_R2-1.svg",
+  railroad:"MUTCD_W10-1.svg",
+  school:"MUTCD_S1-1.svg",
+  pennant:"MUTCD_W14-3.svg",
+  merge:"MUTCD_W4-1.svg",
+  curve:"MUTCD_W1-2.svg",
+  crossroad:"MUTCD_W2-1.svg",
+  signalahead:"MUTCD_W3-3.svg",
+  stopahead:"MUTCD_W3-1.svg",
+  hospital:"MUTCD_D9-2.svg",
+  slowmoving:"MUTCD_SMV.svg"
+};
+function signHTML(key){
+  const fallback = SIGNS[key] || "";
+  if(SIGN_IMG[key]){
+    const url = "https://commons.wikimedia.org/wiki/Special:FilePath/" + SIGN_IMG[key];
+    const fb = encodeURIComponent(fallback);
+    return `<img src="${url}" alt="road sign" style="width:130px;height:130px;object-fit:contain"
+      onerror="this.outerHTML=decodeURIComponent('${fb}')">`;
+  }
+  return fallback;
+}
+
+// ---------- Interface text ----------
+const I18N = {
+  es:{
+    title:"🚗 Examen de Manejo de Kansas",
+    welcome:"¡Bienvenidos!",
+    welcomeSub:"Practique aquí para el examen escrito de manejo de Kansas. Las preguntas están basadas en el Manual del Conductor de Kansas. El examen real también se ofrece en español en las oficinas del DMV.",
+    factQuestions:"preguntas", factPass:"para aprobar", factErrors:"errores permitidos",
+    studyTitle:"📖 Modo de Estudio", studyDesc:"Repase todas las preguntas a su ritmo, con la respuesta y una explicación después de cada una.",
+    studyBtn:"Comenzar a estudiar",
+    examTitle:"📝 Examen de Práctica", examDesc:"25 preguntas al azar, igual que en el DMV. Necesita 20 correctas (80%) para aprobar.",
+    examBtn:"Comenzar el examen",
+    backHome:"← Menú", backHome2:"Volver al menú",
+    next:"Siguiente →", finish:"Ver resultado",
+    ofQ:"de", correct:"¡Correcto!", incorrect:"Incorrecto.",
+    passed:"¡FELICIDADES, APROBÓ! 🎉", failed:"No aprobó esta vez. ¡Siga practicando!",
+    tryAgain:"Intentar otro examen", reviewTitle:"Preguntas que falló:",
+    yourAnswer:"Su respuesta:", correctAnswer:"Respuesta correcta:",
+    all:"Todas", senales:"Señales", reglas:"Reglas", seguridad:"Seguridad", alcohol:"Alcohol y leyes",
+    footer:"Sitio de práctica gratuito basado en el Manual del Conductor de Kansas (ksrevenue.gov). No es un sitio oficial del estado de Kansas.",
+    studyDone:"¡Terminó de repasar todas las preguntas! 👏"
+  },
+  en:{
+    title:"🚗 Kansas Driving Test Practice",
+    welcome:"Welcome!",
+    welcomeSub:"Practice here for the Kansas written driving test. Questions are based on the Kansas Driving Handbook. The real test is also offered in Spanish at DMV offices.",
+    factQuestions:"questions", factPass:"to pass", factErrors:"mistakes allowed",
+    studyTitle:"📖 Study Mode", studyDesc:"Review all questions at your own pace, with the answer and an explanation after each one.",
+    studyBtn:"Start studying",
+    examTitle:"📝 Practice Exam", examDesc:"25 random questions, just like at the DMV. You need 20 correct (80%) to pass.",
+    examBtn:"Start the exam",
+    backHome:"← Menu", backHome2:"Back to menu",
+    next:"Next →", finish:"See results",
+    ofQ:"of", correct:"Correct!", incorrect:"Incorrect.",
+    passed:"CONGRATULATIONS, YOU PASSED! 🎉", failed:"Not this time. Keep practicing!",
+    tryAgain:"Try another exam", reviewTitle:"Questions you missed:",
+    yourAnswer:"Your answer:", correctAnswer:"Correct answer:",
+    all:"All", senales:"Road Signs", reglas:"Rules", seguridad:"Safety", alcohol:"Alcohol & Laws",
+    footer:"Free practice site based on the Kansas Driving Handbook (ksrevenue.gov). Not an official State of Kansas website.",
+    studyDone:"You finished reviewing all the questions! 👏"
+  }
+};
+
+// ---------- State ----------
+let lang = localStorage.getItem("lang") || "es";
+let mode = null;            // "study" | "exam"
+let quizList = [];          // questions in play
+let idx = 0;
+let answers = [];           // {q, chosenText, correctText, ok}
+let studyFilter = "all";
+
+function t(key){ return I18N[lang][key]; }
+
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.getElementById("app-title").textContent = t("title");
+  document.getElementById("langBtn").textContent = lang === "es" ? "English" : "Español";
+  document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+  document.getElementById("footerText").textContent = t("footer");
+  if(!document.getElementById("screen-quiz").classList.contains("hidden")) renderQuestion(false);
+}
+
+function toggleLang(){
+  lang = lang === "es" ? "en" : "es";
+  localStorage.setItem("lang", lang);
+  applyLang();
+}
+
+function show(id){
+  ["screen-home","screen-quiz","screen-results"].forEach(s =>
+    document.getElementById(s).classList.toggle("hidden", s !== id));
+  window.scrollTo(0,0);
+}
+
+function goHome(){ show("screen-home"); }
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---------- Study mode ----------
+function startStudy(){
+  mode = "study";
+  buildFilterBar();
+  setStudyFilter("all");
+  show("screen-quiz");
+}
+
+function buildFilterBar(){
+  const bar = document.getElementById("filterBar");
+  bar.classList.remove("hidden");
+  bar.innerHTML = "";
+  ["all","senales","reglas","seguridad","alcohol"].forEach(cat => {
+    const b = document.createElement("button");
+    b.className = "chip" + (cat === studyFilter ? " active" : "");
+    b.textContent = t(cat === "all" ? "all" : cat);
+    b.onclick = () => setStudyFilter(cat);
+    bar.appendChild(b);
+  });
+}
+
+function setStudyFilter(cat){
+  studyFilter = cat;
+  quizList = cat === "all" ? shuffle(QUESTIONS) : shuffle(QUESTIONS.filter(q => q.cat === cat));
+  idx = 0; answers = [];
+  buildFilterBar();
+  renderQuestion(true);
+}
+
+// ---------- Exam mode ----------
+function startExam(){
+  mode = "exam";
+  document.getElementById("filterBar").classList.add("hidden");
+  quizList = shuffle(QUESTIONS).slice(0, 25);
+  idx = 0; answers = [];
+  show("screen-quiz");
+  renderQuestion(true);
+}
+
+// ---------- Question rendering ----------
+let currentOpts = [];   // shuffled option objects {text:{es,en}, ok}
+let answered = false;
+
+function renderQuestion(fresh){
+  const q = quizList[idx];
+  if(fresh){
+    currentOpts = shuffle(q.opts.map((o, i) => ({o, ok: i === q.a})));
+    answered = false;
+  }
+  document.getElementById("qCount").textContent = (idx + 1) + " " + t("ofQ") + " " + quizList.length;
+  document.getElementById("progressBar").style.width = ((idx) / quizList.length * 100) + "%";
+  document.getElementById("signBox").innerHTML = q.sign ? signHTML(q.sign) : "";
+  document.getElementById("qText").textContent = q.q[lang];
+
+  const list = document.getElementById("optList");
+  list.innerHTML = "";
+  currentOpts.forEach((co, i) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = co.o[lang];
+    if(answered){
+      b.disabled = true;
+      if(co.ok) b.classList.add("correct");
+      else if(answers[idx] && answers[idx].chosenIdx === i && !co.ok) b.classList.add("wrong");
+    } else {
+      b.onclick = () => selectAnswer(i);
+    }
+    list.appendChild(b);
+  });
+
+  const expBox = document.getElementById("expBox");
+  const nextBtn = document.getElementById("nextBtn");
+  if(answered && mode === "study"){
+    expBox.classList.remove("hidden");
+    const ok = answers[idx].ok;
+    expBox.innerHTML = "<b>" + (ok ? "✅ " + t("correct") : "❌ " + t("incorrect")) + "</b> " + q.exp[lang];
+  } else {
+    expBox.classList.add("hidden");
+  }
+  nextBtn.textContent = (idx === quizList.length - 1) ? t("finish") : t("next");
+  nextBtn.classList.toggle("hidden", !answered);
+}
+
+function selectAnswer(i){
+  if(answered) return;
+  answered = true;
+  const q = quizList[idx];
+  const chosen = currentOpts[i];
+  answers[idx] = {q, chosenIdx: i, chosen: chosen.o, ok: chosen.ok};
+  if(mode === "study"){
+    renderQuestion(false);
+  } else {
+    // exam: brief highlight then auto-advance feel — but keep manual Next for control
+    renderExamFeedbackless(i);
+  }
+}
+
+function renderExamFeedbackless(i){
+  // In exam mode no correct/incorrect feedback until the end (like the real test)
+  const list = document.getElementById("optList");
+  Array.from(list.children).forEach((b, j) => {
+    b.disabled = true;
+    if(j === i){ b.style.borderColor = "var(--azul-claro)"; b.style.background = "#e8eef8"; b.style.fontWeight = "700"; }
+  });
+  document.getElementById("nextBtn").classList.remove("hidden");
+}
+
+function nextQuestion(){
+  if(idx < quizList.length - 1){
+    idx++;
+    renderQuestion(true);
+  } else {
+    if(mode === "exam") showResults();
+    else showStudyDone();
+  }
+}
+
+function showStudyDone(){
+  alert(t("studyDone"));
+  goHome();
+}
+
+// ---------- Results ----------
+function showResults(){
+  const correct = answers.filter(a => a && a.ok).length;
+  const passed = correct >= 20;
+  const scoreEl = document.getElementById("resultScore");
+  scoreEl.textContent = correct + " / " + quizList.length;
+  scoreEl.className = "result-big " + (passed ? "pass" : "fail");
+  document.getElementById("resultMsg").textContent = passed ? t("passed") : t("failed");
+
+  const wrong = answers.filter(a => a && !a.ok);
+  const reviewCard = document.getElementById("reviewCard");
+  const reviewList = document.getElementById("reviewList");
+  reviewList.innerHTML = "";
+  if(wrong.length){
+    reviewCard.classList.remove("hidden");
+    wrong.forEach(a => {
+      const div = document.createElement("div");
+      div.className = "review-item";
+      const correctText = a.q.opts[a.q.a][lang];
+      div.innerHTML = "<div class='rq'>" + a.q.q[lang] + "</div>" +
+        "<div class='rw'>" + t("yourAnswer") + " " + a.chosen[lang] + "</div>" +
+        "<div class='ra'>" + t("correctAnswer") + " " + correctText + "</div>" +
+        "<div class='subtitle'>" + a.q.exp[lang] + "</div>";
+      reviewList.appendChild(div);
+    });
+  } else {
+    reviewCard.classList.add("hidden");
+  }
+  show("screen-results");
+  applyLang();
+}
+
+// ---------- Init ----------
+applyLang();
+</script>
+</body>
+</html>
