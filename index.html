@@ -38,6 +38,9 @@
   .q-count{color:var(--gris); font-size:.95rem; margin-bottom:12px;}
   .sign-box{text-align:center; margin:10px 0 16px;}
   .sign-box svg{width:130px; height:130px;}
+  .diagram svg{width:min(280px,80vw); height:auto; border-radius:12px; border:1px solid var(--borde);}
+  .leyenda{display:flex; gap:16px; justify-content:center; margin-top:8px; font-size:.9rem; color:var(--gris);}
+  .leyenda i{display:inline-block; width:14px; height:14px; border-radius:3px; margin-right:5px; vertical-align:-2px;}
   .q-text{font-size:1.25rem; font-weight:700; margin-bottom:16px;}
   .opt{display:block; width:100%; text-align:left; background:#fff; border:2px solid var(--borde); border-radius:12px; padding:16px; font-size:1.1rem; cursor:pointer; margin-bottom:10px; transition:background .15s;}
   .opt:hover{background:#eef2f8;}
@@ -169,6 +172,8 @@
 
 <script src="questions.js?v=3"></script>
 <script src="memes.js?v=3"></script>
+<script src="diagramas.js?v=1"></script>
+<script src="situaciones.js?v=1"></script>
 <script>
 // ---------- Road sign SVGs ----------
 const SIGNS = {
@@ -231,6 +236,14 @@ function signHTML(key){
   return fallback;
 }
 
+function diagramHTML(key){
+  const d = (typeof DIAGRAMAS !== "undefined") ? DIAGRAMAS[key] : null;
+  if(!d) return "";
+  return `<div class="diagram">${d}<div class="leyenda">
+    <span><i style="background:#2d6fd8"></i>${t("legendYou")}</span>
+    <span><i style="background:#e8762c"></i>${t("legendOther")}</span></div></div>`;
+}
+
 // ---------- Interface text ----------
 const I18N = {
   es:{
@@ -248,9 +261,9 @@ const I18N = {
     passed:"¡FELICIDADES, APROBÓ! 🎉", failed:"No aprobó esta vez. ¡Siga practicando!",
     tryAgain:"Intentar otro examen", reviewTitle:"Preguntas que falló:",
     yourAnswer:"Su respuesta:", correctAnswer:"Respuesta correcta:",
-    all:"Todas", senales:"Señales", reglas:"Reglas", seguridad:"Seguridad", alcohol:"Alcohol y leyes",
+    all:"Todas", situaciones:"Situaciones", senales:"Señales", reglas:"Reglas", seguridad:"Seguridad", alcohol:"Alcohol y leyes",
     roleQ:"Antes de empezar... ¿quién eres? 😄", roleSuegro:"El suegro de Rafa 👨", roleSuegra:"La suegra de Rafa 👩",
-    continueBtn:"Continuar",
+    continueBtn:"Continuar", legendYou:"usted", legendOther:"otro auto",
     footer:"Sitio de práctica gratuito basado en el Manual del Conductor de Kansas (ksrevenue.gov). No es un sitio oficial del estado de Kansas.",
     studyDone:"¡Terminó de repasar todas las preguntas! 👏"
   },
@@ -269,15 +282,19 @@ const I18N = {
     passed:"CONGRATULATIONS, YOU PASSED! 🎉", failed:"Not this time. Keep practicing!",
     tryAgain:"Try another exam", reviewTitle:"Questions you missed:",
     yourAnswer:"Your answer:", correctAnswer:"Correct answer:",
-    all:"All", senales:"Road Signs", reglas:"Rules", seguridad:"Safety", alcohol:"Alcohol & Laws",
+    all:"All", situaciones:"Scenarios", senales:"Road Signs", reglas:"Rules", seguridad:"Safety", alcohol:"Alcohol & Laws",
     roleQ:"Before we start... who are you? 😄", roleSuegro:"Rafa's father-in-law 👨", roleSuegra:"Rafa's mother-in-law 👩",
-    continueBtn:"Continue",
+    continueBtn:"Continue", legendYou:"you", legendOther:"other car",
     footer:"Free practice site based on the Kansas Driving Handbook (ksrevenue.gov). Not an official State of Kansas website.",
     studyDone:"You finished reviewing all the questions! 👏"
   }
 };
 
 // ---------- Memes de Rafa (banco en memes.js) ----------
+// unimos las preguntas de situaciones al banco principal
+// (push, no reasignación: QUESTIONS es const)
+if (typeof SITUACIONES !== "undefined") QUESTIONS.push(...SITUACIONES);
+
 const CHEER_EVERY = 12; // study mode: meme every N questions
 const BANKS = {pass: MEME_PASS, fail: MEME_FAIL, cheer: MEME_CHEER};
 let lastMeme = {};      // avoid repeating the same image twice in a row
@@ -379,7 +396,7 @@ function buildFilterBar(){
   const bar = document.getElementById("filterBar");
   bar.classList.remove("hidden");
   bar.innerHTML = "";
-  ["all","senales","reglas","seguridad","alcohol"].forEach(cat => {
+  ["all","situaciones","senales","reglas","seguridad","alcohol"].forEach(cat => {
     const b = document.createElement("button");
     b.className = "chip" + (cat === studyFilter ? " active" : "");
     b.textContent = t(cat === "all" ? "all" : cat);
@@ -418,7 +435,7 @@ function renderQuestion(fresh){
   }
   document.getElementById("qCount").textContent = (idx + 1) + " " + t("ofQ") + " " + quizList.length;
   document.getElementById("progressBar").style.width = ((idx) / quizList.length * 100) + "%";
-  document.getElementById("signBox").innerHTML = q.sign ? signHTML(q.sign) : "";
+  document.getElementById("signBox").innerHTML = q.diag ? diagramHTML(q.diag) : (q.sign ? signHTML(q.sign) : "");
   document.getElementById("qText").textContent = q.q[lang];
 
   const list = document.getElementById("optList");
