@@ -37,7 +37,8 @@
   .progress-bar{height:100%; background:var(--verde); width:0%; transition:width .3s;}
   .q-count{color:var(--gris); font-size:.95rem; margin-bottom:12px;}
   .sign-box{text-align:center; margin:10px 0 16px;}
-  .sign-box svg{width:130px; height:130px;}
+  .sign-box svg{width:150px; height:150px;}
+  .sign-box img{width:min(190px,55vw) !important; height:auto !important; aspect-ratio:1;}
   .diagram svg{width:min(280px,80vw); height:auto; border-radius:12px; border:1px solid var(--borde);}
   .leyenda{display:flex; gap:16px; justify-content:center; margin-top:8px; font-size:.9rem; color:var(--gris);}
   .leyenda i{display:inline-block; width:14px; height:14px; border-radius:3px; margin-right:5px; vertical-align:-2px;}
@@ -188,6 +189,7 @@
 <script src="memes.js?v=3"></script>
 <script src="diagramas.js?v=1"></script>
 <script src="situaciones.js?v=1"></script>
+<script src="senales.js?v=1"></script>
 <script>
 // ---------- Road sign SVGs ----------
 const SIGNS = {
@@ -242,9 +244,9 @@ const SIGN_IMG = {
 function signHTML(key){
   const fallback = SIGNS[key] || "";
   if(SIGN_IMG[key]){
-    const url = "https://commons.wikimedia.org/wiki/Special:FilePath/" + SIGN_IMG[key];
+    const url = "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(SIGN_IMG[key]);
     const fb = encodeURIComponent(fallback);
-    return `<img src="${url}" alt="road sign" style="width:130px;height:130px;object-fit:contain"
+    return `<img src="${url}" alt="road sign" style="width:min(190px,55vw);height:auto;aspect-ratio:1;object-fit:contain"
       onerror="this.outerHTML=decodeURIComponent('${fb}')">`;
   }
   return fallback;
@@ -316,6 +318,8 @@ const I18N = {
 // unimos las preguntas de situaciones al banco principal
 // (push, no reasignación: QUESTIONS es const)
 if (typeof SITUACIONES !== "undefined") QUESTIONS.push(...SITUACIONES);
+if (typeof SENALES !== "undefined") QUESTIONS.push(...SENALES);
+if (typeof SIGN_IMG_EXTRA !== "undefined") Object.assign(SIGN_IMG, SIGN_IMG_EXTRA);
 
 const CHEER_EVERY = 12; // study mode: meme every N questions
 const BANKS = {pass: MEME_PASS, fail: MEME_FAIL, cheer: MEME_CHEER};
