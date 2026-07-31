@@ -70,6 +70,14 @@
     padding:0 8px; letter-spacing:.5px;
     text-shadow:2px 2px 0 #000,-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000,0 3px 6px rgba(0,0,0,.6);}
   .meme-top{top:8px;} .meme-bottom{bottom:10px;}
+  .stats{display:flex; gap:10px; margin:10px 0 6px; flex-wrap:wrap;}
+  .stat{flex:1; min-width:90px; background:var(--fondo); border-radius:10px; padding:10px; text-align:center;}
+  .stat b{display:block; font-size:1.35rem; color:var(--azul);}
+  .stat span{font-size:.8rem; color:var(--gris);}
+  .dots{display:flex; gap:6px; flex-wrap:wrap; margin:8px 0;}
+  .dot{display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px;
+    border-radius:50%; font-size:.85rem; font-weight:700; color:#fff;}
+  .dot.ok{background:var(--verde);} .dot.no{background:#c9a227;}
   .role-btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
   .role-btn{flex:1; min-width:170px; border:2px solid var(--azul-claro); background:#fff; color:var(--azul);
     border-radius:12px; padding:14px; font-size:1.05rem; font-weight:700; cursor:pointer;}
@@ -97,6 +105,10 @@
         <button class="role-btn" id="roleSuegro" onclick="setRole('suegro')" data-i18n="roleSuegro"></button>
         <button class="role-btn" id="roleSuegra" onclick="setRole('suegra')" data-i18n="roleSuegra"></button>
       </div>
+    </div>
+    <div class="card" id="progressCard">
+      <h3 data-i18n="progTitle"></h3>
+      <div id="progBody"></div>
     </div>
     <div class="card">
       <h2 data-i18n="welcome"></h2>
@@ -267,6 +279,9 @@ const I18N = {
     roleQ:"Antes de empezar... ¿quién eres? 😄", roleSuegro:"El suegro de Rafa 👨", roleSuegra:"La suegra de Rafa 👩",
     continueBtn:"Continuar", legendYou:"usted", legendOther:"otro auto",
     seenSoFar:"Ha practicado {n} de {total} preguntas distintas.", resetBank:"Empezar el banco de nuevo",
+    progTitle:"Mi avance", progNone:"Todavía no ha presentado ningún examen. ¡Empiece cuando quiera!",
+    progExams:"exámenes", progPassed:"aprobados", progBest:"mejor", progLast:"Último examen:",
+    progWeak:"Lo que más conviene repasar: {cat} ({pct}% de errores)",
     footer:"Sitio de práctica gratuito basado en el Manual del Conductor de Kansas (ksrevenue.gov). No es un sitio oficial del estado de Kansas.",
     studyDone:"¡Terminó de repasar todas las preguntas! 👏"
   },
@@ -289,6 +304,9 @@ const I18N = {
     roleQ:"Before we start... who are you? 😄", roleSuegro:"Rafa's father-in-law 👨", roleSuegra:"Rafa's mother-in-law 👩",
     continueBtn:"Continue", legendYou:"you", legendOther:"other car",
     seenSoFar:"You have practiced {n} of {total} different questions.", resetBank:"Start the question bank over",
+    progTitle:"My progress", progNone:"No exams yet. Start whenever you like!",
+    progExams:"exams", progPassed:"passed", progBest:"best", progLast:"Last exam:",
+    progWeak:"Worth reviewing most: {cat} ({pct}% missed)",
     footer:"Free practice site based on the Kansas Driving Handbook (ksrevenue.gov). Not an official State of Kansas website.",
     studyDone:"You finished reviewing all the questions! 👏"
   }
@@ -347,6 +365,8 @@ function setRole(r){
   role = r;
   localStorage.setItem("role", r);
   updateRoleButtons();
+  updateProgress();
+  renderProgress();   // cada persona ve su propio avance
 }
 function updateRoleButtons(){
   const a = document.getElementById("roleSuegro"), b = document.getElementById("roleSuegra");
@@ -368,6 +388,7 @@ function applyLang(){
   document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
   document.getElementById("footerText").textContent = t("footer");
   if(!document.getElementById("screen-quiz").classList.contains("hidden")) renderQuestion(false);
+  renderProgress();
 }
 
 function toggleLang(){
@@ -382,7 +403,7 @@ function show(id){
   window.scrollTo(0,0);
 }
 
-function goHome(){ updateProgress(); show("screen-home"); }
+function goHome(){ updateProgress(); renderProgress(); show("screen-home"); }
 
 function shuffle(arr){
   const a = arr.slice();
@@ -434,32 +455,91 @@ function qId(q){
   for(let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
   return h.toString(36);
 }
+// Cada persona guarda su propio avance en este aparato.
+// Each person keeps their own progress on this device.
+function pkey(k){ return "p:" + (role || "invitado") + ":" + k; }
+function load(k, def){
+  try { const v = localStorage.getItem(pkey(k)); return v ? JSON.parse(v) : def; }
+  catch(e){ return def; }
+}
+function save(k, v){
+  try { localStorage.setItem(pkey(k), JSON.stringify(v)); } catch(e){}
+}
+
 // "vistas"      = mazo actual (se vacía al completar una ronda)
 // "vistasTotal" = todas las preguntas que ha visto alguna vez (para el contador)
-function getSeen(){
-  try { return new Set(JSON.parse(localStorage.getItem("vistas") || "[]")); }
-  catch(e){ return new Set(); }
-}
-function saveSeen(set){
-  try { localStorage.setItem("vistas", JSON.stringify([...set])); } catch(e){}
-}
+function getSeen(){ return new Set(load("vistas", [])); }
+function saveSeen(set){ save("vistas", [...set]); }
 function markTotal(ids){
-  try {
-    const tot = new Set(JSON.parse(localStorage.getItem("vistasTotal") || "[]"));
-    ids.forEach(i => tot.add(i));
-    localStorage.setItem("vistasTotal", JSON.stringify([...tot]));
-  } catch(e){}
+  const tot = new Set(load("vistasTotal", []));
+  ids.forEach(i => tot.add(i));
+  save("vistasTotal", [...tot]);
 }
 function seenCount(){
-  try {
-    const tot = new Set(JSON.parse(localStorage.getItem("vistasTotal") || "[]"));
-    return QUESTIONS.filter(q => tot.has(qId(q))).length;
-  } catch(e){ return 0; }
+  const tot = new Set(load("vistasTotal", []));
+  return QUESTIONS.filter(q => tot.has(qId(q))).length;
 }
 function resetSeen(){
-  try { localStorage.removeItem("vistas"); localStorage.removeItem("vistasTotal"); } catch(e){}
-  updateProgress();
+  save("vistas", []); save("vistasTotal", []); save("historial", []); save("categorias", {});
+  updateProgress(); renderProgress();
 }
+
+// ---------- Historial y estadísticas / history & stats ----------
+function getHist(){ return load("historial", []); }
+
+function addResult(score, total){
+  const h = getHist();
+  h.push({ d: Date.now(), s: score, n: total });
+  if(h.length > 60) h.shift();          // no dejamos crecer sin límite
+  save("historial", h);
+  // aciertos y errores por categoría, para saber qué repasar
+  const cats = load("categorias", {});
+  answers.forEach(a => {
+    if(!a) return;
+    const c = a.q.cat;
+    cats[c] = cats[c] || { n: 0, mal: 0 };
+    cats[c].n++;
+    if(!a.ok) cats[c].mal++;
+  });
+  save("categorias", cats);
+}
+
+function weakestCat(){
+  const cats = load("categorias", {});
+  let worst = null, rate = -1;
+  Object.entries(cats).forEach(([c, v]) => {
+    if(v.n < 4) return;                 // muy pocos datos para juzgar
+    const r = v.mal / v.n;
+    if(r > rate && r > 0.25){ rate = r; worst = c; }
+  });
+  return worst ? { cat: worst, pct: Math.round(rate * 100) } : null;
+}
+
+function renderProgress(){
+  const body = document.getElementById("progBody");
+  if(!body) return;
+  const h = getHist();
+  if(!h.length){ body.innerHTML = "<p class='subtitle'>" + t("progNone") + "</p>"; return; }
+  const pass = h.filter(x => x.s >= 20).length;
+  const best = Math.max(...h.map(x => x.s));
+  const last = h[h.length - 1];
+  const fecha = new Date(last.d).toLocaleDateString(lang === "es" ? "es-MX" : "en-US",
+                  { day:"numeric", month:"short" });
+  const weak = weakestCat();
+  const ultimos = h.slice(-8).map(x =>
+    `<span class="dot ${x.s >= 20 ? "ok" : "no"}">${x.s}</span>`).join("");
+  body.innerHTML =
+    `<div class="stats">
+       <div class="stat"><b>${h.length}</b><span>${t("progExams")}</span></div>
+       <div class="stat"><b>${pass}</b><span>${t("progPassed")}</span></div>
+       <div class="stat"><b>${best}/25</b><span>${t("progBest")}</span></div>
+     </div>
+     <p class="subtitle">${t("progLast")} ${last.s}/${last.n} — ${fecha}</p>
+     <div class="dots">${ultimos}</div>
+     <p class="subtitle">${t("seenSoFar").replace("{n}", seenCount()).replace("{total}", QUESTIONS.length)}</p>` +
+    (weak ? `<p class="subtitle">📌 ${t("progWeak").replace("{cat}", t(weak.cat)).replace("{pct}", weak.pct)}</p>` : "");
+}
+
 
 function drawExam(n){
   const seen = getSeen();
@@ -595,6 +675,7 @@ function showStudyDone(){
 function showResults(){
   const correct = answers.filter(a => a && a.ok).length;
   const passed = correct >= 20;
+  addResult(correct, quizList.length);
   // meme de Rafa (al azar del banco)
   showMeme("memeImg", "memeTop", "memeBottom", pickMeme(passed ? "pass" : "fail"));
   const scoreEl = document.getElementById("resultScore");
@@ -629,6 +710,7 @@ function showResults(){
 applyLang();
 updateRoleButtons();
 updateProgress();
+renderProgress();
 </script>
 </body>
 </html>
