@@ -307,13 +307,15 @@ function pickMeme(kind){
     m = bank[(bank.indexOf(m) + 1) % bank.length];
   }
   lastMeme[kind] = m.img;
-  // concordancia de género: %S suegro/a · %B abuelo/a · %O terminación o/a
-  //                          %C campeón/a · %E ese/esa
+  // concordancia de género: %S suegro/a · %B abuelo/a · %P papá/mamá
+  //                          %O terminación o/a · %C campeón/a · %E ese/esa
   const f = role === "suegra";                       // sin rol elegido = masculino
   const line = s => s
     .replace(/%S/g, f ? "SUEGRA" : "SUEGRO")
     .replace(/%B/g, lang === "es" ? (f ? "ABUELA" : "ABUELO")
                                   : (f ? "GRANDMA" : "GRANDPA"))
+    .replace(/%P/g, lang === "es" ? (f ? "MAMÁ" : "PAPÁ")
+                                  : (f ? "MOM" : "DAD"))
     .replace(/%O/g, f ? "A" : "O")
     .replace(/%C/g, f ? "CAMPEONA" : "CAMPEÓN")
     .replace(/%E/g, f ? "ESA" : "ESE");

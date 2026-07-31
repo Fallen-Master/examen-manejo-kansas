@@ -55,7 +55,33 @@ const MEME_PASS = [
    en:["FINISH LINE!","ALMOST BEHIND THE WHEEL 🏁"]},
   {img:"nieta-trofeo.jpg",
    es:["EL TROFEO ES SUYO","%C DE LA FAMILIA 🏆"],
-   en:["THE TROPHY IS YOURS","FAMILY %C 🏆"]}
+   en:["THE TROPHY IS YOURS","FAMILY %C 🏆"]},
+
+  // --- La hija celebrando a sus papás / the daughter celebrating her parents ---
+  {img:"hija-pulgares.jpg",
+   es:["¡%E ES MI %P!","APROBAD%O A LA PRIMERA 👊"],
+   en:["THAT'S MY %P!","PASSED ON THE FIRST TRY 👊"]},
+  {img:"hija-brazos.jpg",
+   es:["¡SÍ SE PUDO!","28 AÑOS ESPERANDO ESTO 🎉"],
+   en:["WE DID IT!","28 YEARS WAITING FOR THIS 🎉"]},
+  {img:"hija-aplausos.jpg",
+   es:["¡BRAVO, %P!","QUÉ ORGULLO 👏"],
+   en:["BRAVO, %P!","SO PROUD OF YOU 👏"]},
+  {img:"hija-licencia.jpg",
+   es:["¡YA CASI ES SUYA!","LA LICENCIA LO ESTÁ ESPERANDO 🪪"],
+   en:["ALMOST YOURS!","THAT LICENSE IS WAITING 🪪"]},
+  {img:"hija-corazon.jpg",
+   es:["NO ESTOY LLORANDO...","ES QUE ESTOY MUY ORGULLOSA 🥹"],
+   en:["I'M NOT CRYING...","I'M JUST SO PROUD 🥹"]},
+  {img:"hija-confeti.jpg",
+   es:["¡FIESTA EN CASA DE LOS GOMEZ!","APROBAD%O 🎊"],
+   en:["PARTY AT THE GOMEZ HOUSE!","PASSED 🎊"]},
+  {img:"hija-trofeo.jpg",
+   es:["¡%C DEL MANUAL!","NADIE LE GANA 🏆"],
+   en:["HANDBOOK %C!","NOBODY BEATS YOU 🏆"]},
+  {img:"hija-brazos-cruzados.jpg",
+   es:["YO SIEMPRE SUPE QUE PODÍA","APROBAD%O 😎"],
+   en:["I ALWAYS KNEW YOU COULD","PASSED 😎"]}
 ];
 
 const MEME_FAIL = [
@@ -93,7 +119,21 @@ const MEME_FAIL = [
    en:["I BELIEVE IN YOU","ONE MORE TRY, %B! 👍"]},
   {img:"nieta-senala.jpg",
    es:["¡USTED PUEDE, %B!","¡NO SE RINDA! 👉"],
-   en:["YOU CAN DO IT, %B!","DON'T GIVE UP! 👉"]}
+   en:["YOU CAN DO IT, %B!","DON'T GIVE UP! 👉"]},
+
+  // --- La hija dando ánimo / the daughter encouraging her parents ---
+  {img:"hija-consuelo.jpg",
+   es:["NO PASA NADA, %P","LO IMPORTANTE ES SEGUIR 💛"],
+   en:["IT'S OKAY, %P","WHAT MATTERS IS KEEPING ON 💛"]},
+  {img:"hija-hombros.jpg",
+   es:["BUENO... CASI","¡A LA PRÓXIMA LE VA MEJOR! 🤷"],
+   en:["WELL... ALMOST","YOU'LL DO BETTER NEXT TIME! 🤷"]},
+  {img:"hija-mano.jpg",
+   es:["AQUÍ ESTOY, %P","LO REPASAMOS JUNTOS 🤝"],
+   en:["I'M RIGHT HERE, %P","WE'LL STUDY IT TOGETHER 🤝"]},
+  {img:"hija-senala.jpg",
+   es:["¡ARRIBA ESE ÁNIMO!","USTED PUEDE, %P 👉"],
+   en:["CHIN UP!","YOU'VE GOT THIS, %P 👉"]}
 ];
 
 const MEME_CHEER = [
@@ -123,5 +163,14 @@ const MEME_CHEER = [
    en:["NICE WORK, %B!","KEEP GOING 👶"]},
   {img:"nieta-aplausos.jpg",
    es:["¡BRAVO!","VA POR BUEN CAMINO 👏"],
-   en:["BRAVO!","YOU'RE ON THE RIGHT TRACK 👏"]}
+   en:["BRAVO!","YOU'RE ON THE RIGHT TRACK 👏"]},
+  {img:"hija-pulgares.jpg",
+   es:["¡VA MUY BIEN, %P!","NO PARE 💪"],
+   en:["DOING GREAT, %P!","DON'T STOP 💪"]},
+  {img:"hija-brazos-cruzados.jpg",
+   es:["MÍRESE NOMÁS","TODO UN EXPERTO 😎"],
+   en:["LOOK AT YOU","A REAL EXPERT 😎"]},
+  {img:"hija-mano.jpg",
+   es:["VAMOS JUNTOS, %P","FALTA POQUITO 🤝"],
+   en:["WE'RE IN THIS TOGETHER, %P","ALMOST THERE 🤝"]}
 ];
