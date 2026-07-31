@@ -32,7 +32,30 @@ const MEME_PASS = [
    en:["YOU STUDYING / ME CELEBRATING","YOU PASSED, %S! 💪"]},
   {img:"pass-trofeo.jpg",
    es:["%C DEL MANUAL DE KANSAS","¡AL DMV SIN MIEDO! 🏆"],
-   en:["KANSAS HANDBOOK CHAMPION","OFF TO THE DMV, NO FEAR! 🏆"]}
+   en:["KANSAS HANDBOOK CHAMPION","OFF TO THE DMV, NO FEAR! 🏆"]},
+
+  // --- La nieta celebrando / the granddaughter celebrating ---
+  {img:"nieta-pulgares.jpg",
+   es:["¡ASÍ SE HACE, %B!","SU NIETA ESTÁ ORGULLOSA 👶"],
+   en:["THAT'S HOW IT'S DONE, %B!","YOUR GRANDDAUGHTER IS PROUD 👶"]},
+  {img:"nieta-aplausos.jpg",
+   es:["¡BRAVO, %B!","APLAUSOS DE SU NIETA 👏"],
+   en:["BRAVO, %B!","A ROUND OF APPLAUSE 👏"]},
+  {img:"nieta-brazos.jpg",
+   es:["¡LO LOGRÓ!","¡FIESTA CON LA NIETA! 🎊"],
+   en:["YOU DID IT!","PARTY WITH THE GRANDBABY! 🎊"]},
+  {img:"nieta-dibujo.jpg",
+   es:["LE HICE UN DIBUJO","PORQUE APROBÓ ⭐"],
+   en:["I MADE YOU A DRAWING","BECAUSE YOU PASSED ⭐"]},
+  {img:"nieta-corneta.jpg",
+   es:["¡A CELEBRAR!","%B APROBÓ EL EXAMEN 🎉"],
+   en:["TIME TO CELEBRATE!","%B PASSED THE TEST 🎉"]},
+  {img:"nieta-bandera.jpg",
+   es:["¡META ALCANZADA!","YA MERO MANEJA 🏁"],
+   en:["FINISH LINE!","ALMOST BEHIND THE WHEEL 🏁"]},
+  {img:"nieta-trofeo.jpg",
+   es:["EL TROFEO ES SUYO","%C DE LA FAMILIA 🏆"],
+   en:["THE TROPHY IS YOURS","FAMILY %C 🏆"]}
 ];
 
 const MEME_FAIL = [
@@ -56,7 +79,21 @@ const MEME_FAIL = [
    en:["IT TOOK ME A FEW TRIES TOO","NOBODY PASSES FIRST TIME 😴"]},
   {img:"fail-senala.jpg",
    es:["USTED PUEDE, %S","¡OTRO INTENTO Y ES SUYA! 👉"],
-   en:["YOU'VE GOT THIS, %S","ONE MORE GO AND IT'S YOURS! 👉"]}
+   en:["YOU'VE GOT THIS, %S","ONE MORE GO AND IT'S YOURS! 👉"]},
+
+  // --- La nieta dando ánimo / the granddaughter cheering them up ---
+  {img:"nieta-consuelo.jpg",
+   es:["NO SE PREOCUPE, %B","LA PRÓXIMA ES LA BUENA 💛"],
+   en:["DON'T WORRY, %B","NEXT ONE'S THE GOOD ONE 💛"]},
+  {img:"nieta-hombros.jpg",
+   es:["¿Y AHORA QUÉ PASÓ?","NI MODO, OTRA VUELTA 🤷"],
+   en:["SO WHAT HAPPENED?","OH WELL, LET'S GO AGAIN 🤷"]},
+  {img:"nieta-animo.jpg",
+   es:["YO CREO EN USTED","¡OTRO INTENTO, %B! 👍"],
+   en:["I BELIEVE IN YOU","ONE MORE TRY, %B! 👍"]},
+  {img:"nieta-senala.jpg",
+   es:["¡USTED PUEDE, %B!","¡NO SE RINDA! 👉"],
+   en:["YOU CAN DO IT, %B!","DON'T GIVE UP! 👉"]}
 ];
 
 const MEME_CHEER = [
@@ -77,5 +114,14 @@ const MEME_CHEER = [
    en:["YOU CAN ALMOST FEEL THE WHEEL","KEEP GOING! 🚗"]},
   {img:"pass-confeti.jpg",
    es:["¡QUÉ BIEN VA!","UNAS CUANTAS MÁS 🎊"],
-   en:["LOOKING GOOD!","JUST A FEW MORE 🎊"]}
+   en:["LOOKING GOOD!","JUST A FEW MORE 🎊"]},
+  {img:"nieta-porra.jpg",
+   es:["¡VAMOS, %B!","¡SU NIETA LE ECHA PORRAS! 📣"],
+   en:["GO, %B!","YOUR GRANDBABY IS CHEERING! 📣"]},
+  {img:"nieta-pulgares.jpg",
+   es:["¡MUY BIEN, %B!","SIGA ASÍ 👶"],
+   en:["NICE WORK, %B!","KEEP GOING 👶"]},
+  {img:"nieta-aplausos.jpg",
+   es:["¡BRAVO!","VA POR BUEN CAMINO 👏"],
+   en:["BRAVO!","YOU'RE ON THE RIGHT TRACK 👏"]}
 ];
