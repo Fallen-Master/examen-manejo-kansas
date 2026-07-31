@@ -115,7 +115,9 @@
     <div class="card">
       <h3 data-i18n="examTitle"></h3>
       <p class="subtitle" data-i18n="examDesc"></p>
+      <p class="subtitle" id="bankProgress"></p>
       <button class="btn btn-green" onclick="startExam()" data-i18n="examBtn"></button>
+      <button class="link-btn" onclick="resetSeen()" data-i18n="resetBank"></button>
     </div>
   </section>
 
@@ -264,6 +266,7 @@ const I18N = {
     all:"Todas", situaciones:"Situaciones", senales:"Señales", reglas:"Reglas", seguridad:"Seguridad", alcohol:"Alcohol y leyes",
     roleQ:"Antes de empezar... ¿quién eres? 😄", roleSuegro:"El suegro de Rafa 👨", roleSuegra:"La suegra de Rafa 👩",
     continueBtn:"Continuar", legendYou:"usted", legendOther:"otro auto",
+    seenSoFar:"Ha practicado {n} de {total} preguntas distintas.", resetBank:"Empezar el banco de nuevo",
     footer:"Sitio de práctica gratuito basado en el Manual del Conductor de Kansas (ksrevenue.gov). No es un sitio oficial del estado de Kansas.",
     studyDone:"¡Terminó de repasar todas las preguntas! 👏"
   },
@@ -285,6 +288,7 @@ const I18N = {
     all:"All", situaciones:"Scenarios", senales:"Road Signs", reglas:"Rules", seguridad:"Safety", alcohol:"Alcohol & Laws",
     roleQ:"Before we start... who are you? 😄", roleSuegro:"Rafa's father-in-law 👨", roleSuegra:"Rafa's mother-in-law 👩",
     continueBtn:"Continue", legendYou:"you", legendOther:"other car",
+    seenSoFar:"You have practiced {n} of {total} different questions.", resetBank:"Start the question bank over",
     footer:"Free practice site based on the Kansas Driving Handbook (ksrevenue.gov). Not an official State of Kansas website.",
     studyDone:"You finished reviewing all the questions! 👏"
   }
@@ -378,7 +382,7 @@ function show(id){
   window.scrollTo(0,0);
 }
 
-function goHome(){ show("screen-home"); }
+function goHome(){ updateProgress(); show("screen-home"); }
 
 function shuffle(arr){
   const a = arr.slice();
@@ -418,11 +422,76 @@ function setStudyFilter(cat){
   renderQuestion(true);
 }
 
+// ---------- Bolsa de preguntas ----------
+// Reparte como una baraja: ninguna pregunta se repite hasta agotar el banco.
+// Deals like a deck of cards: no question repeats until the whole bank is used.
+
+// Huella estable de cada pregunta. Incluimos la señal/diagrama y la primera
+// respuesta porque varias preguntas comparten el texto "¿Qué significa esta señal?"
+function qId(q){
+  const s = q.q.es + "|" + (q.sign || "") + "|" + (q.diag || "") + "|" + q.opts[0].es;
+  let h = 5381;
+  for(let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
+  return h.toString(36);
+}
+// "vistas"      = mazo actual (se vacía al completar una ronda)
+// "vistasTotal" = todas las preguntas que ha visto alguna vez (para el contador)
+function getSeen(){
+  try { return new Set(JSON.parse(localStorage.getItem("vistas") || "[]")); }
+  catch(e){ return new Set(); }
+}
+function saveSeen(set){
+  try { localStorage.setItem("vistas", JSON.stringify([...set])); } catch(e){}
+}
+function markTotal(ids){
+  try {
+    const tot = new Set(JSON.parse(localStorage.getItem("vistasTotal") || "[]"));
+    ids.forEach(i => tot.add(i));
+    localStorage.setItem("vistasTotal", JSON.stringify([...tot]));
+  } catch(e){}
+}
+function seenCount(){
+  try {
+    const tot = new Set(JSON.parse(localStorage.getItem("vistasTotal") || "[]"));
+    return QUESTIONS.filter(q => tot.has(qId(q))).length;
+  } catch(e){ return 0; }
+}
+function resetSeen(){
+  try { localStorage.removeItem("vistas"); localStorage.removeItem("vistasTotal"); } catch(e){}
+  updateProgress();
+}
+
+function drawExam(n){
+  const seen = getSeen();
+  const frescas = QUESTIONS.filter(q => !seen.has(qId(q)));   // aún no vistas
+  if(frescas.length < n){
+    // se agotó el banco: usamos las que faltan y arrancamos mazo nuevo
+    const resto = shuffle(QUESTIONS.filter(q => seen.has(qId(q))));
+    const pick  = shuffle(frescas).concat(resto).slice(0, n);
+    saveSeen(new Set(pick.map(qId)));
+    markTotal(pick.map(qId));
+    return shuffle(pick);
+  }
+  const pick = shuffle(frescas).slice(0, n);
+  pick.forEach(q => seen.add(qId(q)));
+  saveSeen(seen);
+  markTotal(pick.map(qId));
+  return pick;
+}
+
+function updateProgress(){
+  const el = document.getElementById("bankProgress");
+  if(!el) return;
+  el.textContent = t("seenSoFar")
+    .replace("{n}", seenCount())
+    .replace("{total}", QUESTIONS.length);
+}
+
 // ---------- Exam mode ----------
 function startExam(){
   mode = "exam";
   document.getElementById("filterBar").classList.add("hidden");
-  quizList = shuffle(QUESTIONS).slice(0, 25);
+  quizList = drawExam(25);
   idx = 0; answers = [];
   show("screen-quiz");
   renderQuestion(true);
@@ -559,6 +628,7 @@ function showResults(){
 // ---------- Init ----------
 applyLang();
 updateRoleButtons();
+updateProgress();
 </script>
 </body>
 </html>
